@@ -15,6 +15,8 @@
 		086B281D1BE56D750096182D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 086B281C1BE56D750096182D /* Assets.xcassets */; };
 		086B28201BE56D750096182D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 086B281E1BE56D750096182D /* LaunchScreen.storyboard */; };
 		086B282B1BE56D760096182D /* ObjectiveGit_DemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 086B282A1BE56D760096182D /* ObjectiveGit_DemoTests.m */; };
+		089AA7D91BE56F4900788607 /* ObjectiveGit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089AA7D81BE56F4900788607 /* ObjectiveGit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		089AA7DD1BE570A500788607 /* GitHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 089AA7DC1BE570A500788607 /* GitHistoryManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +45,9 @@
 		086B28261BE56D760096182D /* ObjectiveGit-DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ObjectiveGit-DemoTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		086B282A1BE56D760096182D /* ObjectiveGit_DemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjectiveGit_DemoTests.m; sourceTree = "<group>"; };
 		086B282C1BE56D760096182D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		089AA7D81BE56F4900788607 /* ObjectiveGit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveGit.framework; path = Carthage/Build/iOS/ObjectiveGit.framework; sourceTree = "<group>"; };
+		089AA7DB1BE570A500788607 /* GitHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitHistoryManager.h; sourceTree = "<group>"; };
+		089AA7DC1BE570A500788607 /* GitHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitHistoryManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				089AA7D91BE56F4900788607 /* ObjectiveGit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +72,7 @@
 		086B28011BE56D750096182D = {
 			isa = PBXGroup;
 			children = (
+				089AA7D81BE56F4900788607 /* ObjectiveGit.framework */,
 				086B280C1BE56D750096182D /* ObjectiveGit-Demo */,
 				086B28291BE56D760096182D /* ObjectiveGit-DemoTests */,
 				086B280B1BE56D750096182D /* Products */,
@@ -90,6 +97,8 @@
 				086B28141BE56D750096182D /* MasterViewController.m */,
 				086B28161BE56D750096182D /* DetailViewController.h */,
 				086B28171BE56D750096182D /* DetailViewController.m */,
+				089AA7DB1BE570A500788607 /* GitHistoryManager.h */,
+				089AA7DC1BE570A500788607 /* GitHistoryManager.m */,
 				086B28191BE56D750096182D /* Main.storyboard */,
 				086B281C1BE56D750096182D /* Assets.xcassets */,
 				086B281E1BE56D750096182D /* LaunchScreen.storyboard */,
@@ -126,6 +135,7 @@
 				086B28061BE56D750096182D /* Sources */,
 				086B28071BE56D750096182D /* Frameworks */,
 				086B28081BE56D750096182D /* Resources */,
+				089AA7DA1BE56F5700788607 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -211,6 +221,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		089AA7DA1BE56F5700788607 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/ObjectiveGit.framework/",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		086B28061BE56D750096182D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -218,6 +245,7 @@
 			files = (
 				086B28121BE56D750096182D /* AppDelegate.m in Sources */,
 				086B28151BE56D750096182D /* MasterViewController.m in Sources */,
+				089AA7DD1BE570A500788607 /* GitHistoryManager.m in Sources */,
 				086B280F1BE56D750096182D /* main.m in Sources */,
 				086B28181BE56D750096182D /* DetailViewController.m in Sources */,
 			);
@@ -345,6 +373,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Carthage/Build/iOS/ObjectiveGit.framework/Headers/";
 				INFOPLIST_FILE = "ObjectiveGit-Demo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mobiquityinc.ObjectiveGit-Demo";
@@ -356,6 +390,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Carthage/Build/iOS/ObjectiveGit.framework/Headers/";
 				INFOPLIST_FILE = "ObjectiveGit-Demo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mobiquityinc.ObjectiveGit-Demo";
@@ -406,6 +446,7 @@
 				086B28311BE56D760096182D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		086B28321BE56D760096182D /* Build configuration list for PBXNativeTarget "ObjectiveGit-DemoTests" */ = {
 			isa = XCConfigurationList;
@@ -414,6 +455,7 @@
 				086B28341BE56D760096182D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

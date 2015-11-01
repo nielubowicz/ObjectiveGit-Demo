@@ -8,10 +8,16 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "GitHistoryManager.h"
 
-@interface MasterViewController ()
+@import ObjectiveGit;
 
-@property NSMutableArray *objects;
+@interface MasterViewController () <UITextViewDelegate>
+
+@property (strong, nonatomic) UITextView *committedText;
+
+@property NSMutableArray<GTCommit *> *objects;
+
 @end
 
 @implementation MasterViewController
@@ -28,21 +34,27 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
+    NSLog([[GitHistoryManager sharedInstance] loadCurrentData]);
     [super viewWillAppear:animated];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.objects = [[[GitHistoryManager sharedInstance] commitHistory] mutableCopy];
+    [self.committedText setText:[[GitHistoryManager sharedInstance] loadCurrentData]];
+    self.tableView.tableHeaderView = self.committedText;
+    [self.tableView reloadData];
 }
 
-- (void)insertNewObject:(id)sender {
-    if (!self.objects) {
-        self.objects = [[NSMutableArray alloc] init];
+- (UITextView *)committedText {
+    if (_committedText == nil) {
+        CGSize tableViewSize = self.tableView.bounds.size;
+        _committedText = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, tableViewSize.width, 88)];
+        [_committedText setEditable:YES];
+        [_committedText setDelegate:self];
     }
-    [self.objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+
+    return _committedText;
 }
 
 #pragma mark - Segues
@@ -50,9 +62,11 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = self.objects[indexPath.row];
+        GTCommit *commit = self.objects[indexPath.row];
+        NSString *fileData = [[GitHistoryManager sharedInstance] loadDataFromCommit:commit];
+
         DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
-        [controller setDetailItem:object];
+        [controller setDetailItem:fileData];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
@@ -71,23 +85,17 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 
-    NSDate *object = self.objects[indexPath.row];
-    cell.textLabel.text = [object description];
+    GTCommit *commit = self.objects[indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ at %@", [commit message], [commit commitDate]];
+    cell.detailTextLabel.text = commit.author.name;
+    
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
+#pragma mark - UITextViewDelegate
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.objects removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-    }
+- (void)textViewDidChange:(UITextView *)textView {
+    [[GitHistoryManager sharedInstance] saveData:textView.text];
 }
 
 @end
