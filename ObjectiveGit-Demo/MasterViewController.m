@@ -57,6 +57,14 @@
     return _committedText;
 }
 
+- (void)insertObject:(id)object atIndex:(NSUInteger)index {
+    [self.tableView beginUpdates];
+    [self.objects insertObject:object atIndex:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+    [self.tableView endUpdates];
+}
+
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -95,7 +103,8 @@
 #pragma mark - UITextViewDelegate
 
 - (void)textViewDidChange:(UITextView *)textView {
-    [[GitHistoryManager sharedInstance] saveData:textView.text];
+    GTCommit *newCommit = [[GitHistoryManager sharedInstance] saveData:textView.text];
+    [self insertObject:newCommit atIndex:0];
 }
 
 @end
